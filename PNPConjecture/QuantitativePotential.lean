@@ -60,7 +60,11 @@ theorem potential_gap_rules_out_short_derivation
   intro derivation
   have bound := derivation_potential_bound
     step potential delta localBound derivation
-  exact (not_lt_of_ge bound) gap
+  have impossible :
+      potential start + steps * delta <
+        potential start + steps * delta :=
+    Nat.lt_of_lt_of_le gap bound
+  exact (Nat.lt_irrefl _) impossible
 
 /--
 Threshold form of the same bridge: if the target has potential at least
@@ -84,7 +88,11 @@ theorem threshold_rules_out_short_derivation
     step potential delta localBound derivation
   have thresholdBound :
       threshold ≤ potential start + steps * delta :=
-    le_trans targetLarge bound
-  exact (not_lt_of_ge thresholdBound) budgetSmall
+    Nat.le_trans targetLarge bound
+  have impossible :
+      potential start + steps * delta <
+        potential start + steps * delta :=
+    Nat.lt_of_lt_of_le budgetSmall thresholdBound
+  exact (Nat.lt_irrefl _) impossible
 
 end PNPConjecture
