@@ -17,6 +17,9 @@ theorem constantOne_not_equivalent_linearGrowing :
   rcases equivalent with ⟨factor, bounds⟩
   have impossible := (bounds factor).2
   simp [constantOneCost, linearGrowingCost] at impossible
+  have factor_lt_itself : factor < factor :=
+    Nat.lt_of_lt_of_le (Nat.lt_succ_self factor) impossible
+  exact (Nat.lt_irrefl factor) factor_lt_itself
 
 /-- A fixed verifier for the universal language on `Unit`. -/
 def alwaysAcceptPresentation : VerifierPresentation Unit where
