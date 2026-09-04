@@ -5,3 +5,4 @@ import PNPConjecture.PathBoundaryCounterexample
 import PNPConjecture.ReductionCategoryCounterexample
 import PNPConjecture.RhoCounterexample
 import PNPConjecture.VerifierPadding
+import PNPConjecture.WitnessStructureCounterexample
