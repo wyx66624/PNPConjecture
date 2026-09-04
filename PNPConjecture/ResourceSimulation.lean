@@ -210,7 +210,7 @@ def simulatedResourceClass {Input : Type u}
   Quotient.mk _ resource
 
 /-- Forward simulation from an original presentation to its padded version. -/
-def paddingForwardSimulation {Input : Type u}
+noncomputable def paddingForwardSimulation {Input : Type u}
     (resource : ResourcePresentation.{u, v} Input)
     (Dummy : Type v)
     [Nonempty Dummy] :
@@ -240,7 +240,7 @@ def paddingBackwardSimulation {Input : Type u}
   targetCostBound := costDominatedBy_refl resource.cost
 
 /-- Nonempty dummy padding is an explicit resource bisimulation. -/
-def paddingResourceBisimulation {Input : Type u}
+noncomputable def paddingResourceBisimulation {Input : Type u}
     (resource : ResourcePresentation.{u, v} Input)
     (Dummy : Type v)
     [Nonempty Dummy] :
