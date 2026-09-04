@@ -87,17 +87,33 @@ A refuter or local defect certificate can be encoded as a propositional proof ob
 
 The 2026 sign-complex framework shows the required pattern: define a canonical \(\mathbb Z_2\)-space, prove its equivariant index lower-bounds a recognized complexity measure, then compute the index for an explicit family. VIOT seeks an analogous bridge for circuit size, not an analogy-only argument.
 
-## 6. The verifier-padding no-go principle
+## 6. Formalized verifier-padding no-go theorems
 
-The formalized padding theorem yields:
+For one input \(x\), define the accepting-certificate fiber
+\[
+W_x(V)=\{w:V(x,w)=1\}.
+\]
+For a dummy type \(D\), let \(V_D(x,(d,w))=V(x,w)\). The branch now formalizes the exact structural equivalence
+\[
+W_x(V_D)\cong D\times W_x(V).
+\]
+This equivalence needs no nonemptiness assumption. When \(D\) is nonempty, the recognized languages are extensionally equal:
+\[
+L(V_D)=L(V).
+\]
+Consequently:
 
 > Any purported language invariant that changes when a nonempty ignored certificate factor is added does not factor through the recognized language.
+
+The concrete `Unit`/`Bool` example makes the failure observable without cardinal arithmetic: the original accepting fiber is a subsingleton, whereas the padded fiber contains the distinct witnesses `(false, ())` and `(true, ())`; both verifiers recognize the same language.
+
+Lean: `VerifierPadding.lean` and `WitnessStructureCounterexample.lean`.
 
 A stronger research target is the **gadget insertion theorem**:
 
 > For any finite polynomially navigable directed gadget \(G\) with a source-to-sink path and any verifier \(\mathcal V\), construct an equivalent verifier \(G\star\mathcal V\) that traverses \(G\) before running \(\mathcal V\).
 
-If raw trace homology detects \(G\), then arbitrary homology can be inserted into an easy language. Proving the exact theorem for each proposed trace complex is a required adversarial test.
+If raw trace homology detects \(G\), then topology unrelated to language hardness may be inserted into an easy presentation. Proving the exact theorem for each proposed trace complex is a required adversarial test. The current certificate-product theorem proves this no-go phenomenon for raw witness fibers; it does not yet prove arbitrary realization of configuration-space homotopy types.
 
 ## 7. Barrier audit
 
