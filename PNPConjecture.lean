@@ -1,3 +1,4 @@
+import PNPConjecture.AsymptoticPotential
 import PNPConjecture.BarrierCriteria
 import PNPConjecture.ContractingHomotopyCounterexample
 import PNPConjecture.DiamondTraceNoGo
