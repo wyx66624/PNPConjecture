@@ -1,6 +1,6 @@
 # Research status and claim ledger
 
-Last updated: 2026-09-03 (America/Chicago)
+Last updated: 2026-09-04
 
 ## Global question
 
@@ -22,41 +22,72 @@ Determine whether every language decidable by a nondeterministic polynomial-time
 | A8 | A trivial verifier can have a subsingleton accepting-certificate fiber while its `Bool`-padded presentation has two provably distinct accepting certificates, although both presentations recognize exactly the same language. | FORMALIZED | `WitnessStructureCounterexample.lean` |
 | A9 | Same-language equivalence is a setoid on verifier presentations; in the resulting coarse semantic quotient, nonempty dummy padding is literal equality, and every quotient-defined invariant ignores it. | FORMALIZED | `VerifierSemanticQuotient.lean` |
 | A10 | Two constant-time, rank-increasing trace presentations recognize the same universal language on `Unit`, while the direct presentation has no induced four-cycle and the dummy two-branch diamond has a chordless square in its underlying graph. Hence raw trace-cycle structure is not a language invariant. | FORMALIZED | `DiamondTraceNoGo.lean` |
+| A11 | Under the current abstract trace semantics, every start-to-accept reachable graph represents the universal language, and any two reachable trace gadgets represent the same language regardless of their unused graph structure. | FORMALIZED | `TracePresentationUniversality.lean` |
+| A12 | Constant-factor equivalence of cost profiles is an equivalence relation; combining it with same-language equivalence yields a first resource-sensitive quotient of costed verifier presentations. Nonempty dummy padding is equality in this quotient. | FORMALIZED | `ResourceSensitivePresentation.lean` |
+| A13 | The pure semantic quotient forgets asymptotic cost: one identical always-accepting verifier with costs \(1\) and \(n+1\) has the same semantic class but different resource classes. | FORMALIZED | `SemanticCostLoss.lean` |
+| A14 | Certificate-preserving, constant-overhead resource simulations compose; bidirectional simulations form a setoid and a quotient. Ignored nonempty padding is witnessed by explicit forward and backward simulations and becomes equality in that quotient. | FORMALIZED | `ResourceSimulation.lean` |
+| A15 | The linear and diamond trace presentations have the same language and constant-factor-equivalent costs, yet only the diamond has an induced four-cycle. Raw trace-cycle structure therefore fails even resource-equivalence invariance. | FORMALIZED | `ResourceSensitiveTraceNoGo.lean` |
+| A16 | If every legal construction step raises a natural-valued potential by at most \(\delta\), then an \(s\)-step construction raises it by at most \(s\delta\); a target beyond that budget cannot be constructed in \(s\) steps. | FORMALIZED | `QuantitativePotential.lean` |
+| A17 | If a target family's potential exceeds the budget of every polynomial derivation-size bound, while each construction step has the stated local potential bound, then the target derivation-size family is not polynomially bounded. | FORMALIZED | `AsymptoticPotential.lean` |
+| A18 | The canonical pointwise-disagreement obstruction is nonzero for every candidate exactly when no exact candidate exists. It therefore restates, rather than proves, the desired lower bound. | FORMALIZED | `DisagreementObstruction.lean` |
 
-Results A1–A4 refute the cited manuscript's specific proof. Results A5, A8, A9, and A10 establish presentation-invariance requirements for any repaired topological or categorical route. They do **not** refute every possible topological approach to circuit complexity.
+Results A1–A4 refute the cited manuscript's specific proof. Results A5, A8–A15 establish necessary presentation- and resource-invariance conditions for any repaired topological or categorical route. Results A16–A17 give a correct abstract quantitative lower-bound bridge. Result A18 rules out a tautological choice of obstruction. None of these statements is an unconditional P-versus-NP separation.
 
 ## Current literature calibration
 
-The September 2026 review includes the following major nearby advances:
-
-- convergent gate elimination and constructive refuters for restricted Boolean bases;
-- \(n^{2.5-\varepsilon}\) lower bounds for depth-two threshold circuits for a function in \(E^{NP}\);
-- near-maximum circuit lower bounds in \(E^{\mathrm{prMA}}/_1\);
-- \(\exp(\widetilde\Omega(\sqrt n))\) monotone lower bounds for bipartite perfect matching;
-- \(\Omega(n^{1.5})\) noncommutative arithmetic-circuit product-gate lower bounds; and
-- an extension of natural-proofs barriers to broad classes of linear-function lower bounds.
+The September 2026 review includes major nearby advances in convergent gate elimination, constructive refuters, depth-two threshold circuits, near-maximum lower bounds in exponential-time classes, monotone perfect-matching circuits, noncommutative arithmetic circuits, proof complexity, meta-complexity, and topological lower bounds for restricted models.
 
 Each advance is model-specific. None currently supplies either a worst-case polynomial-time SAT algorithm or a superpolynomial lower bound for SAT against unrestricted Boolean circuits.
 
-## Decisive remaining gaps
+## Progress on the four decisive gaps
 
-A proof of \(P\ne NP\) through circuit lower bounds must ultimately supply an explicit language in NP—typically SAT—with superpolynomial circuit lower bounds. The unrestricted fan-in-two Boolean-circuit frontier remains only linear for explicit functions, so improving a constant in gate elimination is not close to the required asymptotic separation.
+### 1. Resource-sensitive presentation invariance
 
-The proposed VIOT route has four non-negotiable gaps:
+**Narrowed but not closed.** A first quotient by same language and constant-factor cost has been formalized, as has a more structural quotient by explicit bidirectional certificate simulations with constant-factor overhead. The pure semantic quotient has been formally shown to erase asymptotic cost.
 
-1. **Resource-sensitive presentation invariance:** construct a localization or quotient where padding, bounded stuttering, recoding, dummy branching, and polynomial-time bidirectional simulation act trivially without erasing the computational cost information needed for lower bounds.
-2. **Circuit soundness:** prove that a size-\(s(n)\) circuit computing the target forces the obstruction to vanish or remain below a quantitative index.
-3. **Target nonvanishing:** prove, uniformly and explicitly, that the target NP family has a nonzero or superpolynomially growing obstruction against every circuit of the prescribed size.
-4. **Barrier escape:** identify exactly which decisive premise is nonrelativizing, non-natural in the Razborov–Rudich sense, and non-algebrizing, or explicitly restrict the theorem to a model where the corresponding barrier is inapplicable.
+The remaining requirement is to derive the cost profile from a formal uniform machine or circuit semantics rather than supply it externally, and to formalize state recoding, bounded stuttering, branch insertion, certificate recoding, advice, fan-out, sharing, depth, size, and uniformity with proved overhead bounds.
 
-The semantic quotient in A9 is deliberately coarse: it removes presentation artifacts but also forgets computational cost. It is a calibration object, not the final resource-sensitive localization required by VIOT.
+### 2. Circuit soundness
+
+**Abstract logical bridge formalized; concrete bridge open.** The one-step and family-level potential theorems prove the exact implication
+
+\[
+\text{local gate-growth bound} + \text{superpolynomial target potential}
+\Longrightarrow
+\text{superpolynomial construction size}.
+\]
+
+What remains is a non-tautological potential or obstruction for the full unrestricted binary basis \(\mathcal B_2\), with a proved one-gate Lipschitz bound and a faithful correspondence between derivation length and circuit size.
+
+### 3. Explicit NP target nonvanishing
+
+**Open.** The disagreement obstruction has been proved tautological. A useful obstruction must have an independently provable structural upper bound for every small circuit and a separately provable superpolynomial lower bound for SAT or another explicit NP-complete family. No such unrestricted-circuit nonvanishing theorem is presently established here.
+
+### 4. Barrier escape
+
+**Diagnosed but not closed.** The current quotient, simulation, and potential-accumulation lemmas relativize and are compatible with algebraic extension; consequently they cannot be the decisive barrier-escaping ingredient. A final proof must isolate an exact target-specific lemma that is nonrelativizing and nonalgebrizing, and must audit whether the induced property is constructive, large, and useful in the Razborov–Rudich sense. Results for restricted circuit models require an explicit transfer theorem before they can say anything about unrestricted SAT circuits.
+
+## Resource-Localized Obstruction Profiles
+
+The current synthesis is called a **Resource-Localized Obstruction Profile (RLOP)**. An RLOP should consist of:
+
+1. a resource-simulation quotient of computational presentations;
+2. a gate-construction category or higher rewriting groupoid;
+3. a presentation-invariant potential or index \(\Phi_f\);
+4. a one-gate quantitative growth theorem;
+5. an explicit target-growth theorem;
+6. a barrier audit and a transfer theorem to a standard NP-complete family.
+
+Items 1 and the abstract form of item 4 now have Lean-checked calibration models. Items 3, 5, and 6 remain the decisive research targets for unrestricted circuits.
 
 ## Refuted route versus active repair
 
 **REFUTED:** “Take adjacent valid computation traces as simplices, apply ordinary face deletion, and use verification-order cycles to separate P from NP.”
 
-**ALSO REFUTED AS A LANGUAGE INVARIANT:** “Use raw accepting-witness multiplicity or raw trace-cycle structure without first quotienting polynomial-time presentation changes.”
+**ALSO REFUTED AS A LANGUAGE OR RESOURCE INVARIANT:** “Use raw accepting-witness multiplicity or raw trace-cycle structure without first quotienting constant-overhead presentation changes.”
 
-**ACTIVE:** “Construct a resource-sensitive presentation-invariant derived object over restrictions or simulations, prove a circuit-sound obstruction theorem, and establish superpolynomial target nonvanishing for an explicit NP family.”
+**TAUTOLOGICAL, NOT A LOWER-BOUND METHOD:** “Use the existence of a pointwise disagreement itself as the obstruction and call its universal nonvanishing a proof.”
+
+**ACTIVE:** “Construct a resource-localized, non-tautological obstruction over unrestricted circuit-building operations, prove a one-gate bound, and establish superpolynomial target growth for an explicit NP family.”
 
 The distinction is essential: explicit counterexamples eliminate precise definitions, while the repaired route remains active until one of its own exact conjectures is refuted or proved.

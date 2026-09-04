@@ -1,0 +1,537 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Resource-Localized Obstruction Profiles for Circuit Lower Bounds:\\
+Formal Calibration Theorems and Exact Remaining Gaps}
+\author{ChatGPT}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We develop a resource-sensitive refinement of Verifier-Invariant Obstruction
+Theory for the study of circuit lower bounds.  The objective is not to attach
+homology to one arbitrary verifier, but to construct quantitative obstructions
+only after quotienting computational presentations by explicitly controlled
+simulations.  We prove and Lean-formalize five calibration results.  First,
+same-language equivalence together with constant-factor equivalence of cost
+profiles defines a quotient of costed verifier presentations.  Second, a pure
+semantic quotient provably forgets asymptotic cost.  Third, bidirectional
+certificate simulations with constant-factor overhead form an equivalence
+relation, and ignored certificate padding is trivial in the corresponding
+quotient.  Fourth, raw trace-cycle structure changes under constant-factor
+resource equivalence.  Fifth, a potential whose increase per construction
+step is bounded yields a quantitative construction-size lower bound, and a
+family-level superpolynomial potential-growth condition rules out polynomially
+bounded derivations.
+
+We also prove that the canonical pointwise-disagreement obstruction is
+logically equivalent to the desired lower-bound statement and therefore
+provides no independent leverage.  These results motivate Resource-Localized
+Obstruction Profiles (RLOPs).  The decisive missing theorem remains a
+non-tautological RLOP for unrestricted Boolean circuits with superpolynomial
+growth on an explicit NP-complete family.  No resolution of P versus NP is
+claimed.
+\end{abstract}
+
+\section{Introduction}
+
+A circuit-lower-bound route to \(P\ne NP\) may target the stronger statement
+\[
+  \mathrm{SAT}\notin P/poly.
+\]
+To prove it by an obstruction \(\Omega\), one needs substantially more than a
+cycle, cohomology class, or geometric feature of one machine presentation.
+One needs a quantitative theorem of the form
+\[
+  C\text{ computes }f
+  \quad\Longrightarrow\quad
+  \Omega(f,C)\le B(|C|),
+\]
+and a separate explicit-target theorem showing that every polynomial-size
+candidate violates the required bound.
+
+Raw computation graphs are not canonical.  Certificate padding, state
+recoding, bounded stuttering, dummy branching, and other constant-overhead
+changes can alter their combinatorial and topological structure while
+preserving both the language and its asymptotic resource class.  Thus a
+candidate invariant must first descend through a resource-controlled
+localization.
+
+The present paper gives formal calibration theorems for this principle.  The
+results are machine-checked in the companion Lean development.  They narrow
+the design space for a valid obstruction but do not establish a lower bound
+for unrestricted SAT circuits.
+
+\section{Costed verifier presentations}
+
+\begin{definition}[Cost profile]
+A cost profile is a function
+\[
+  T:\mathbb N\to\mathbb N.
+\]
+\end{definition}
+
+\begin{definition}[Constant-factor equivalence]
+For cost profiles \(T,U\), write \(T\asymp_c U\) when there is a constant
+\(K\in\mathbb N\) such that for every \(n\),
+\[
+  T(n)\le K U(n)
+  \quad\text{and}\quad
+  U(n)\le K T(n).
+\]
+\end{definition}
+
+\begin{proposition}
+Constant-factor equivalence is an equivalence relation.
+\end{proposition}
+
+\begin{proof}
+Reflexivity uses \(K=1\).  Symmetry exchanges the two inequalities.  For
+transitivity, suppose \(T\asymp_c U\) with factor \(K\) and
+\(U\asymp_c V\) with factor \(L\).  Then
+\[
+  T(n)\le K U(n)\le KL V(n)
+\]
+and, in the reverse direction,
+\[
+  V(n)\le L U(n)\le LK T(n)=KL T(n).
+\]
+\end{proof}
+
+\begin{definition}[Resource presentation]
+A resource presentation over an input type \(X\) is a triple
+\[
+  \mathcal V=(W,V,T),
+\]
+where \(W\) is a certificate type,
+\(V:X\times W\to\{0,1\}\) is a verifier, and \(T\) is a cost profile.
+Its language is
+\[
+  L(\mathcal V)=\{x:\exists w,\ V(x,w)=1\}.
+\]
+\end{definition}
+
+\begin{definition}[First resource equivalence]
+Two resource presentations are first-resource equivalent when they recognize
+the same language and their cost profiles are constant-factor equivalent.
+\end{definition}
+
+\begin{theorem}
+First-resource equivalence is an equivalence relation and therefore defines a
+quotient of resource presentations.
+\end{theorem}
+
+\begin{proof}
+Same-language equivalence and constant-factor equivalence are both equivalence
+relations.  Their conjunction is again an equivalence relation.
+\end{proof}
+
+This quotient is deliberately a calibration object.  Its cost annotation is
+supplied externally rather than derived from a formal operational semantics.
+Nevertheless, it already distinguishes semantic equivalence from resource
+equivalence.
+
+\section{The semantic quotient forgets cost}
+
+\begin{theorem}[Semantic cost-loss theorem]
+There exist two resource presentations whose underlying verifier
+presentations have the same semantic class but whose cost profiles are not
+constant-factor equivalent.
+\end{theorem}
+
+\begin{proof}
+Use the same verifier in both presentations: on the sole input and sole
+certificate, always return true.  Assign the first presentation the cost
+profile
+\[
+  T_1(n)=1
+\]
+and the second the profile
+\[
+  T_2(n)=n+1.
+\]
+After cost is forgotten, the verifier presentations are literally identical.
+Suppose, however, that the profiles were constant-factor equivalent with
+factor \(K\).  The reverse comparison would imply
+\[
+  n+1\le K
+\]
+for every \(n\).  Setting \(n=K\) gives \(K+1\le K\), a contradiction.
+\end{proof}
+
+\begin{corollary}
+An obstruction defined only on the pure semantic quotient cannot, without
+additional data, recover asymptotic running time or circuit size.
+\end{corollary}
+
+The conclusion does not say that semantic invariants are useless.  It says
+that a complexity obstruction must be enriched by resource data or by a
+resource-controlled morphism theory.
+
+\section{Explicit resource simulations}
+
+\begin{definition}[Certificate simulation]
+Let \(\mathcal V=(W,V,T)\) and \(\mathcal U=(Z,U,S)\).  A certificate
+simulation from \(\mathcal V\) to \(\mathcal U\) is a map
+\[
+  \phi:W\to Z
+\]
+such that for every input \(x\) and certificate \(w\),
+\[
+  U(x,\phi(w))=V(x,w).
+\]
+\end{definition}
+
+Such a simulation gives the language inclusion
+\[
+  L(\mathcal V)\subseteq L(\mathcal U).
+\]
+Indeed, an accepting certificate \(w\) maps to an accepting certificate
+\(\phi(w)\).
+
+\begin{definition}[Resource simulation]
+A resource simulation additionally requires a constant \(K\) for which
+\[
+  S(n)\le K T(n)
+\]
+for all \(n\).  A resource bisimulation consists of resource simulations in
+both directions.
+\end{definition}
+
+\begin{theorem}
+Resource bisimulation is an equivalence relation.
+\end{theorem}
+
+\begin{proof}
+Identity certificate maps and the factor one give reflexivity.  Reversing the
+two simulations gives symmetry.  Certificate maps compose, verifier-answer
+preservation is transitive, and cost constants multiply, giving
+transitivity.
+\end{proof}
+
+\begin{theorem}[Padding is trivial in the simulation quotient]
+Let \(D\) be nonempty and define the padded verifier by
+\[
+  V_D(x,(d,w))=V(x,w).
+\]
+If padding leaves the supplied cost profile unchanged, then \(\mathcal V\)
+and \(\mathcal V_D\) are resource-bisimilar.
+\end{theorem}
+
+\begin{proof}
+Choose one element \(d_0\in D\).  The forward certificate map is
+\[
+  w\longmapsto(d_0,w),
+\]
+and the backward map is
+\[
+  (d,w)\longmapsto w.
+\]
+Both maps preserve the verifier answer definitionally, and both cost
+comparisons use factor one.
+\end{proof}
+
+\begin{corollary}
+Every invariant defined on the resource-simulation quotient ignores nonempty
+certificate padding.
+\end{corollary}
+
+\section{Trace topology is not resource invariant}
+
+Consider a direct computation graph
+\[
+  s\longrightarrow t
+\]
+and a diamond graph
+\[
+  s\longrightarrow \ell\longrightarrow t,
+  \qquad
+  s\longrightarrow r\longrightarrow t.
+\]
+Both graphs are acyclic and have strictly increasing rank functions.  Under
+the fixed-start/fixed-accept abstract trace semantics, both recognize the
+universal language on a one-element input type.
+
+\begin{theorem}[Reachable trace universality]
+For the abstract language
+\[
+  L_{G,s,t}(x)\iff s\leadsto_G t,
+\]
+if \(s\leadsto_G t\), then \(L_{G,s,t}\) is the universal language.
+Consequently, any two reachable trace presentations recognize the same
+language.
+\end{theorem}
+
+\begin{proof}
+The right-hand side of the defining equivalence is independent of \(x\).  If
+the fixed reachability fact holds, it witnesses membership for every input.
+\end{proof}
+
+Equip the direct graph with constant cost one and the diamond graph with
+constant cost two.  The two profiles are constant-factor equivalent.
+Nevertheless, after forgetting edge directions the diamond has the induced
+four-cycle
+\[
+  s-\ell-t-r-s,
+\]
+while the two-vertex direct graph has no four distinct vertices.
+
+\begin{theorem}[Resource-sensitive trace no-go theorem]
+Induced-four-cycle structure is not invariant under same-language,
+constant-factor resource equivalence.
+\end{theorem}
+
+\begin{proof}
+The direct and diamond presentations have the same language and equivalent
+constant profiles, but their induced-four-cycle predicates have opposite
+truth values.
+\end{proof}
+
+This counterexample uses neither unreachable states nor superpolynomial
+padding.  It follows that raw graph cycles cannot serve as resource-sensitive
+language obstructions before quotienting constant-overhead branch insertion
+and merging.
+
+\section{Quantitative potential bridges}
+
+\begin{definition}[Step derivation]
+Let \(S\to S'\) denote one legal construction step.  A derivation of length
+\(m\) is a sequence of exactly \(m\) such steps.
+\end{definition}
+
+\begin{theorem}[Potential accumulation]
+Let \(\Phi\) be a natural-valued potential.  Suppose every legal step
+satisfies
+\[
+  \Phi(S')\le \Phi(S)+\delta.
+\]
+Then every length-\(m\) derivation from \(S_0\) to \(S_m\) satisfies
+\[
+  \Phi(S_m)\le \Phi(S_0)+m\delta.
+\]
+\end{theorem}
+
+\begin{proof}
+Induct on the derivation.  The zero-step case is equality.  For the last
+step, combine the induction hypothesis with the one-step bound:
+\[
+  \Phi(S_{m+1})
+  \le \Phi(S_m)+\delta
+  \le \Phi(S_0)+m\delta+\delta
+  =\Phi(S_0)+(m+1)\delta.
+\]
+\end{proof}
+
+\begin{corollary}
+If
+\[
+  \Phi(S_0)+m\delta<\Phi(S_{\mathrm{target}}),
+\]
+then no length-\(m\) derivation reaches the target.
+\end{corollary}
+
+For a family indexed by input length, let \(m(n)\) be the construction size,
+\(\delta(n)\) the one-step growth bound, and \(S_0(n),S_f(n)\) the initial
+and target states.
+
+\begin{theorem}[Family-level superpolynomial bridge]
+Assume that for every coefficient \(a\) and degree \(k\), some \(n\) satisfies
+\[
+ \Phi_n(S_0(n))+
+ \bigl(a(n+1)^k\bigr)\delta(n)
+ <
+ \Phi_n(S_f(n)).
+\]
+If every target has a derivation of size \(m(n)\), then \(m\) is not
+polynomially bounded.
+\end{theorem}
+
+\begin{proof}
+Suppose \(m(n)\le a(n+1)^k\) for fixed \(a,k\).  The potential accumulation
+theorem gives
+\[
+ \Phi_n(S_f(n))
+ \le \Phi_n(S_0(n))+m(n)\delta(n)
+ \le \Phi_n(S_0(n))+a(n+1)^k\delta(n),
+\]
+contradicting the assumed target-growth inequality for the corresponding
+\(n\).
+\end{proof}
+
+For circuit lower bounds, one would instantiate a state with a library of
+available gate outputs and a construction step with the addition of one legal
+gate.  The theorem is a correct circuit-soundness schema.  Its force depends
+entirely on finding a non-tautological potential with a strong local bound and
+superpolynomial target value.
+
+\section{The disagreement diagnostic}
+
+\begin{definition}
+For Boolean functions \(C,f:X\to\{0,1\}\), define
+\[
+  D(C,f)\iff \exists x,\ C(x)\ne f(x).
+\]
+\end{definition}
+
+\begin{theorem}
+For every candidate class \(\mathcal C\),
+\[
+  \forall C\in\mathcal C,\ D(C,f)
+  \quad\Longleftrightarrow\quad
+  \nexists C\in\mathcal C\text{ computing }f.
+\]
+\end{theorem}
+
+\begin{proof}
+If every candidate disagrees, no candidate is exact.  Conversely, if a
+candidate had no disagreement, pointwise equality would make it an exact
+computation, contradicting the absence of an exact candidate.
+\end{proof}
+
+\begin{remark}
+The theorem is useful as an audit.  Choosing disagreement itself as
+\(\Omega\) makes ``target nonvanishing'' logically identical to the desired
+lower bound.  It is not an independently analyzable obstruction.
+\end{remark}
+
+\section{Resource-Localized Obstruction Profiles}
+
+\begin{definition}[RLOP]
+A Resource-Localized Obstruction Profile for a target family \(f_n\) should
+include:
+\begin{enumerate}[leftmargin=*]
+\item a quotient or localization by explicitly bounded computational
+simulations;
+\item a gate-construction category, rewriting system, or higher groupoid;
+\item a presentation-invariant potential or index \(\Phi_{f_n}\);
+\item a theorem bounding the change caused by one unrestricted circuit gate;
+\item a superpolynomial lower bound for \(\Phi_{f_n}\) on the explicit target;
+\item a uniformity and model-transfer theorem; and
+\item an audit against relativization, natural proofs, and algebrization.
+\end{enumerate}
+\end{definition}
+
+The calibration theorems in this paper establish the logical form of items
+one and four, and show why a semantic quotient or raw trace invariant is
+insufficient.  They do not produce the potential required by items three and
+five.
+
+\section{Barrier audit}
+
+The quotient and potential-accumulation theorems are deliberately generic.
+They relativize and remain valid under algebraic extensions.  Therefore they
+cannot be the decisive nonrelativizing or nonalgebrizing step in a proof of
+\(P\ne NP\).
+
+A candidate-relative obstruction may avoid the largeness premise of the
+Razborov--Rudich framework because it depends jointly on the target and the
+candidate circuit.  Yet an efficient refuter for every unrestricted small
+circuit would itself be a major constructive lower bound.  Thus the phrase
+``candidate relative'' does not remove the central difficulty.
+
+Finally, a theorem for monotone, bounded-depth, threshold, formula,
+noncommutative arithmetic, or proof-complexity models must not be promoted to
+unrestricted Boolean circuits without an explicit simulation theorem and a
+proved overhead bound.
+
+\section{Exact remaining target}
+
+A complete RLOP separation must produce an explicit NP-complete family,
+preferably \(\mathrm{SAT}_n\), and prove all of the following:
+\begin{enumerate}[leftmargin=*]
+\item every polynomial-size unrestricted circuit induces a construction with
+polynomially many legal steps;
+\item the RLOP potential changes by at most a controlled amount per gate;
+\item the initial potential is controlled;
+\item the SAT target potential exceeds every polynomial construction budget;
+\item the construction is uniform enough to identify an NP language;
+\item the decisive target-growth proof escapes the classical barriers.
+\end{enumerate}
+The family-level potential theorem would then yield
+\(\mathrm{SAT}\notin P/poly\), and the standard inclusion
+\(P\subseteq P/poly\) would imply \(P\ne NP\).
+
+At present, the fourth and sixth items are unresolved.  They are not hidden
+inside the terminology of RLOPs.
+
+\section{Lean formalization}
+
+The companion modules formalize all proved calibration results without
+`Sorry', `admit', or user-declared axioms:
+\begin{itemize}[leftmargin=*]
+\item `ResourceSensitivePresentation.lean';
+\item `SemanticCostLoss.lean';
+\item `ResourceSimulation.lean';
+\item `TracePresentationUniversality.lean';
+\item `ResourceSensitiveTraceNoGo.lean';
+\item `QuantitativePotential.lean';
+\item `AsymptoticPotential.lean'; and
+\item `DisagreementObstruction.lean'.
+\end{itemize}
+
+\section{Conclusion}
+
+Resource sensitivity is not a cosmetic addition to topological circuit
+lower bounds.  Pure semantic quotients erase cost, while raw trace topology
+changes under constant-overhead presentation transformations.  A valid
+obstruction must therefore descend through an explicit simulation quotient
+and simultaneously obey a quantitative gate-growth theorem.
+
+The RLOP framework isolates these requirements and supplies a formal
+family-level bridge from target growth to superpolynomial construction size.
+The unresolved scientific core is now explicit: construct a non-tautological
+RLOP over unrestricted Boolean gates and prove superpolynomial growth for an
+explicit NP-complete family in a way that escapes the known barriers.
+
+\begin{thebibliography}{99}
+\bibitem{BGS}
+T. Baker, J. Gill, and R. Solovay,
+Relativizations of the \(P=?NP\) question,
+\emph{SIAM Journal on Computing} 4 (1975).
+
+\bibitem{RR}
+A. Razborov and S. Rudich,
+Natural proofs,
+\emph{Journal of Computer and System Sciences} 55 (1997).
+
+\bibitem{AW}
+S. Aaronson and A. Wigderson,
+Algebrization: A new barrier in complexity theory,
+\emph{ACM Transactions on Computation Theory} 1 (2009).
+
+\bibitem{Williams}
+R. Williams,
+Nonuniform ACC circuit lower bounds,
+\emph{Journal of the ACM} 61 (2014).
+
+\bibitem{LiYang}
+J. Li and T. Yang,
+A \(3.1n-o(n)\) circuit lower bound for explicit functions,
+STOC, 2022.
+
+\bibitem{CDJ}
+M. Carmosino, N. Dang, and T. Jackman,
+Convergent gate elimination and constructive circuit lower bounds,
+arXiv:2602.17942, 2026.
+
+\bibitem{CJSSW}
+L. Chen, C. Jin, R. Santhanam, and R. Williams,
+Constructive separations and their consequences,
+ECCC TR21-159, 2021.
+\end{thebibliography}
+
+\end{document}
