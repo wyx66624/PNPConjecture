@@ -1,10 +1,15 @@
 import PNPConjecture.BarrierCriteria
 import PNPConjecture.ContractingHomotopyCounterexample
 import PNPConjecture.DiamondTraceNoGo
+import PNPConjecture.DisagreementObstruction
 import PNPConjecture.ObstructionSoundness
 import PNPConjecture.PathBoundaryCounterexample
+import PNPConjecture.QuantitativePotential
 import PNPConjecture.ReductionCategoryCounterexample
+import PNPConjecture.ResourceSensitivePresentation
+import PNPConjecture.ResourceSensitiveTraceNoGo
 import PNPConjecture.RhoCounterexample
+import PNPConjecture.TracePresentationUniversality
 import PNPConjecture.VerifierPadding
 import PNPConjecture.VerifierSemanticQuotient
 import PNPConjecture.WitnessStructureCounterexample
