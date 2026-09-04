@@ -10,6 +10,7 @@ import PNPConjecture.ResourceSensitivePresentation
 import PNPConjecture.ResourceSensitiveTraceNoGo
 import PNPConjecture.ResourceSimulation
 import PNPConjecture.RhoCounterexample
+import PNPConjecture.SemanticCostLoss
 import PNPConjecture.TracePresentationUniversality
 import PNPConjecture.VerifierPadding
 import PNPConjecture.VerifierSemanticQuotient
