@@ -2,27 +2,29 @@ import Std
 
 namespace PNPConjecture
 
+universe u v w z
+
 /-- The language recognized by a Boolean verifier with existential certificates. -/
-def Recognizes {Input Certificate : Type}
+def Recognizes {Input : Type u} {Certificate : Type v}
     (verifier : Input → Certificate → Bool)
     (x : Input) : Prop :=
   ∃ certificate, verifier x certificate = true
 
 /-- The fiber of accepting certificates above one input. -/
-def AcceptingCertificate {Input Certificate : Type}
+def AcceptingCertificate {Input : Type u} {Certificate : Type v}
     (verifier : Input → Certificate → Bool)
-    (x : Input) : Type :=
+    (x : Input) : Type v :=
   { certificate : Certificate // verifier x certificate = true }
 
 /-- A self-contained notion of type equivalence used by the minimal Lean project. -/
-structure TypeEquivalence (A B : Type) where
+structure TypeEquivalence (A : Type u) (B : Type v) where
   toFun : A → B
   invFun : B → A
   left_inv : ∀ a, invFun (toFun a) = a
   right_inv : ∀ b, toFun (invFun b) = b
 
 /-- Add an ignored dummy certificate component. -/
-def padVerifier {Input Certificate Dummy : Type}
+def padVerifier {Input : Type u} {Certificate : Type v} {Dummy : Type w}
     (verifier : Input → Certificate → Bool) :
     Input → (Dummy × Certificate) → Bool :=
   fun x paddedCertificate => verifier x paddedCertificate.2
@@ -33,7 +35,7 @@ of the dummy type and the original accepting-certificate fiber. No
 nonemptiness assumption is needed for this structural equivalence.
 -/
 def paddedAcceptingCertificateEquiv
-    {Input Certificate Dummy : Type}
+    {Input : Type u} {Certificate : Type v} {Dummy : Type w}
     (verifier : Input → Certificate → Bool)
     (x : Input) :
     TypeEquivalence
@@ -55,7 +57,7 @@ A nonempty ignored certificate component does not change the recognized
 language.
 -/
 theorem padded_verifier_recognizes_iff
-    {Input Certificate Dummy : Type}
+    {Input : Type u} {Certificate : Type v} {Dummy : Type w}
     [Nonempty Dummy]
     (verifier : Input → Certificate → Bool)
     (x : Input) :
@@ -68,13 +70,13 @@ theorem padded_verifier_recognizes_iff
     let dummy : Dummy := Classical.choice (inferInstance : Nonempty Dummy)
     exact ⟨(dummy, certificate), accepted⟩
 
-def RecognizedLanguage {Input Certificate : Type}
+def RecognizedLanguage {Input : Type u} {Certificate : Type v}
     (verifier : Input → Certificate → Bool) : Input → Prop :=
   fun x => Recognizes verifier x
 
 /-- Extensional equality of the languages recognized before and after padding. -/
 theorem padded_verifier_language_eq
-    {Input Certificate Dummy : Type}
+    {Input : Type u} {Certificate : Type v} {Dummy : Type w}
     [Nonempty Dummy]
     (verifier : Input → Certificate → Bool) :
     RecognizedLanguage (padVerifier (Dummy := Dummy) verifier) =
@@ -89,7 +91,8 @@ Every invariant that factors through the recognized language ignores dummy
 certificate padding.
 -/
 theorem language_factored_invariant_ignores_padding
-    {Input Certificate Dummy Invariant : Type}
+    {Input : Type u} {Certificate : Type v} {Dummy : Type w}
+    {Invariant : Type z}
     [Nonempty Dummy]
     (languageInvariant : (Input → Prop) → Invariant)
     (verifier : Input → Certificate → Bool) :
