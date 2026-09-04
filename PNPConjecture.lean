@@ -8,6 +8,7 @@ import PNPConjecture.QuantitativePotential
 import PNPConjecture.ReductionCategoryCounterexample
 import PNPConjecture.ResourceSensitivePresentation
 import PNPConjecture.ResourceSensitiveTraceNoGo
+import PNPConjecture.ResourceSimulation
 import PNPConjecture.RhoCounterexample
 import PNPConjecture.TracePresentationUniversality
 import PNPConjecture.VerifierPadding
