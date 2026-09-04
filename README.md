@@ -69,6 +69,7 @@ Neither bridge is currently claimed as proved.
 - `RESEARCH_STATUS.md` — exact claim ledger, statuses, and decisive remaining gaps.
 - `docs/LITERATURE_REVIEW.md` — barrier-aware literature review through September 2026.
 - `docs/HOMOLOGICAL_CLAIM_AUDIT.md` — mathematical audit and explicit counterexamples.
+- `docs/DIAMOND_TRACE_NO_GO.md` — proof that constant-time dummy branching can change raw trace-cycle structure.
 - `docs/VERIFIER_INVARIANT_OBSTRUCTION_THEORY.md` — definitions and proof obligations for VIOT.
 - `docs/MULTI_ROUTE_PROGRAM.md` — parallel research routes and falsification criteria.
 - `paper/main.tex` — English research paper authored by **ChatGPT**.
