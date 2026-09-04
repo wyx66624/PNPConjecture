@@ -23,6 +23,8 @@ At the start of this research pass, `main` contained only `.gitignore` and `LICE
 | A5 | For ignored dummy certificate type \(D\), the accepting-certificate fiber of the padded verifier is equivalent to \(D\times W_x\); when \(D\) is nonempty, the recognized language is unchanged. Hence language-factored invariants must ignore this arbitrary product enlargement. | FORMALIZED | `VerifierPadding.lean` |
 | A6 | Any obstruction satisfying “exact computation implies zero obstruction” and “all candidate circuits have nonzero obstruction” rules out every candidate circuit. | FORMALIZED | `ObstructionSoundness.lean` |
 | A7 | If an NP problem is outside P, then \(P\ne NP\); more specifically, since \(P\subseteq P/poly\), an NP problem outside \(P/poly\) separates P from NP. | FORMALIZED (abstract class form) | `BarrierCriteria.lean` |
+| A8 | A trivial verifier can have a subsingleton accepting-certificate fiber while its `Bool`-padded presentation has two provably distinct accepting certificates, although both presentations recognize exactly the same language. | FORMALIZED | `WitnessStructureCounterexample.lean` |
+| A9 | Same-language equivalence is a setoid on verifier presentations; in the resulting coarse semantic quotient, nonempty dummy padding is literal equality, and every quotient-defined invariant ignores it. | FORMALIZED | `VerifierSemanticQuotient.lean` |
 
 These results refute the cited manuscript's specific chain-complex construction and its main proof, but **do not refute every possible topological approach** to circuit complexity.
 
@@ -32,12 +34,14 @@ A proof of \(P\ne NP\) through circuit lower bounds must eventually supply an ex
 
 The proposed VIOT route has four non-negotiable gaps:
 
-1. **Presentation invariance:** define the obstruction on a localization or equivalent quotient where certificate padding, stuttering, recoding, and polynomial-time bidirectional simulation act trivially.
+1. **Presentation invariance:** define the obstruction on a resource-sensitive localization or equivalent quotient where certificate padding, stuttering, recoding, and polynomial-time bidirectional simulation act trivially without erasing the complexity information needed for lower bounds.
 2. **Circuit soundness:** prove that a size-\(s(n)\) circuit computing the target forces the obstruction to vanish or remain below a quantitative index.
 3. **Target nonvanishing:** prove, uniformly and explicitly, that the target NP family has a nonzero or growing obstruction against every circuit of the prescribed size.
 4. **Barrier escape:** identify exactly which premise is nonrelativizing, non-natural in the Razborov–Rudich sense, and non-algebrizing, or prove that the route is intentionally confined to a circuit class where those barriers do not apply.
 
-Until all four are closed, VIOT is a structured research program, not a separation proof.
+The semantic quotient in A9 is deliberately coarse: it removes presentation artifacts but also forgets computational cost. It is a calibration object, not the final resource-sensitive localization required by VIOT.
+
+Until all four gaps are closed, VIOT is a structured research program, not a separation proof.
 
 ## Refuted route versus repaired route
 
