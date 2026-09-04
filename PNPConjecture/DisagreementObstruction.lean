@@ -26,8 +26,11 @@ theorem computesFunction_iff_no_disagreement
     rcases disagreement with ⟨x, differs⟩
     exact differs (computes x)
   · intro noDisagreement x
-    by_contra differs
-    exact noDisagreement ⟨x, differs⟩
+    cases Classical.em (candidate x = target x) with
+    | inl equal =>
+        exact equal
+    | inr differs =>
+        exact False.elim (noDisagreement ⟨x, differs⟩)
 
 /-- Failure to compute is equivalent to a pointwise disagreement. -/
 theorem not_computesFunction_iff_disagreement
@@ -38,10 +41,14 @@ theorem not_computesFunction_iff_disagreement
   classical
   constructor
   · intro notComputes
-    by_contra noDisagreement
-    apply notComputes
-    exact (computesFunction_iff_no_disagreement
-      candidate target).2 noDisagreement
+    cases Classical.em (HasDisagreement candidate target) with
+    | inl disagreement =>
+        exact disagreement
+    | inr noDisagreement =>
+        exact False.elim
+          (notComputes
+            ((computesFunction_iff_no_disagreement
+              candidate target).2 noDisagreement))
   · intro disagreement computes
     exact (computesFunction_iff_no_disagreement
       candidate target).1 computes disagreement
