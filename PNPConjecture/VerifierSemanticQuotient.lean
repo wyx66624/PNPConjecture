@@ -52,13 +52,13 @@ def presentationSetoid (Input : Type u) :
   }
 
 /-- The coarse semantic quotient that remembers only the recognized language. -/
-def SemanticVerifier (Input : Type u) : Type (max u (v + 1)) :=
-  Quotient (presentationSetoid (v := v) Input)
+def SemanticVerifier (Input : Type u) :=
+  Quotient (presentationSetoid.{u, v} Input)
 
 /-- The semantic class of one presentation. -/
 def semanticClass {Input : Type u}
     (presentation : VerifierPresentation.{u, v} Input) :
-    SemanticVerifier (v := v) Input :=
+    SemanticVerifier.{u, v} Input :=
   Quotient.mk _ presentation
 
 /-- Add an ignored dummy factor to a verifier presentation. -/
@@ -92,7 +92,7 @@ theorem padPresentation_semanticClass_eq {Input : Type u}
 theorem semantic_quotient_invariant_ignores_padding
     {Input : Type u}
     {Invariant : Type w}
-    (invariant : SemanticVerifier (v := v) Input → Invariant)
+    (invariant : SemanticVerifier.{u, v} Input → Invariant)
     (presentation : VerifierPresentation.{u, v} Input)
     (Dummy : Type v)
     [Nonempty Dummy] :
