@@ -14,6 +14,13 @@ def AcceptingCertificate {Input Certificate : Type}
     (x : Input) : Type :=
   { certificate : Certificate // verifier x certificate = true }
 
+/-- A self-contained notion of type equivalence used by the minimal Lean project. -/
+structure TypeEquivalence (A B : Type) where
+  toFun : A → B
+  invFun : B → A
+  left_inv : ∀ a, invFun (toFun a) = a
+  right_inv : ∀ b, toFun (invFun b) = b
+
 /-- Add an ignored dummy certificate component. -/
 def padVerifier {Input Certificate Dummy : Type}
     (verifier : Input → Certificate → Bool) :
@@ -29,7 +36,7 @@ def paddedAcceptingCertificateEquiv
     {Input Certificate Dummy : Type}
     (verifier : Input → Certificate → Bool)
     (x : Input) :
-    Equiv
+    TypeEquivalence
       (AcceptingCertificate (padVerifier (Dummy := Dummy) verifier) x)
       (Dummy × AcceptingCertificate verifier x) where
   toFun padded :=
