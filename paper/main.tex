@@ -33,15 +33,17 @@ average is not additive under composition; and the displayed contracting
 homotopy fails on a one-edge deterministic computation. These results are
 formalized in Lean.
 
-Our second contribution is a presentation-invariance principle. Adding an
-ignored nonempty certificate factor preserves the recognized language while
-it may alter raw trace multiplicity. This motivates Verifier-Invariant
-Obstruction Theory (VIOT), in which topological data are formed only after
-localizing verifier presentations by resource-preserving simulations,
-padding, stuttering, and recoding. We formulate a sound obstruction schema
-and a barrier-aware program connecting restriction sites, constructive
-refuters, convergent gate elimination, proof complexity, and equivariant
-topology. The central circuit lower bound remains open.
+Our second contribution is a presentation-invariance principle. If an ignored
+dummy certificate type \(D\) is added, then the accepting-certificate fiber
+becomes exactly \(D\) times the original fiber, while the recognized language
+is unchanged whenever \(D\) is nonempty. Thus raw witness multiplicity and
+unquotiented trace topology are not language invariants. This motivates
+Verifier-Invariant Obstruction Theory (VIOT), in which topological data are
+formed only after localizing verifier presentations by resource-preserving
+simulations, padding, stuttering, and recoding. We formulate a sound
+obstruction schema and a barrier-aware program connecting restriction sites,
+constructive refuters, convergent gate elimination, proof complexity, and
+equivariant topology. The central circuit lower bound remains open.
 \end{abstract}
 
 \section{Introduction}
@@ -65,9 +67,9 @@ and then states a repaired topological program with every missing bridge made
 explicit.
 
 \paragraph{Epistemic status.}
-The counterexamples and padding theorem below are proved and formalized. The
-VIOT constructions are definitions and conjectures, not a proof of
-\(P\ne NP\).
+The counterexamples, certificate-fiber equivalence, and padding theorem below
+are proved and formalized. The VIOT constructions are definitions and
+conjectures, not a proof of \(P\ne NP\).
 
 \section{Circuit-lower-bound setting}
 
@@ -87,17 +89,18 @@ step.
 
 For unrestricted binary circuits, gate elimination remains the main explicit
 method. Li and Yang proved a \(3.1n-o(n)\) lower bound over the complete binary
-basis. Carmosino, Dang, and Jackman show that simplification is confluent over
-DeMorgan and \(\{\land,\lor,\oplus\}\) bases but not over \(\mathcal U_2\)
-and \(\mathcal B_2\), and connect simplification with constructive refuters
-\cite{CDJ}. Improving a linear constant is valuable but asymptotically
-insufficient for NP versus \(P/poly\).
+basis \cite{LiYang}. Carmosino, Dang, and Jackman show that simplification is
+confluent over DeMorgan and \(\{\land,\lor,\oplus\}\) bases but not over
+\(\mathcal U_2\) and \(\mathcal B_2\), and connect simplification with
+constructive refuters \cite{CDJ}. Improving a linear constant is valuable but
+asymptotically insufficient for NP versus \(P/poly\).
 
 \section{Audit of a claimed homological separation}
 \label{sec:audit}
 
 The construction in \cite{Tang} takes directed computation paths
-\((c_0,\ldots,c_n)\) as generators and proposes
+\((c_0,\ldots,c_n)\), beginning at an initial configuration and ending at a
+terminal configuration, as generators and proposes
 \[
  d_n(c_0,\ldots,c_n)=
  \sum_{i=0}^n(-1)^i(c_0,\ldots,\widehat c_i,\ldots,c_n).
@@ -108,9 +111,9 @@ verification-order cocycle, and a contraction of deterministic computations.
 \subsection{Face closure}
 
 \begin{theorem}[The proposed boundary is not well-defined]
-There is a valid directed computation path whose middle face is not a valid
-directed path. Hence the displayed \(d_n\) need not map the stated group
-\(C_n\) to \(C_{n-1}\).
+There is a valid directed computation path none of whose ordinary faces is a
+valid computation path. Hence the displayed \(d_n\) need not map the stated
+group \(C_n\) to \(C_{n-1}\).
 \end{theorem}
 
 \begin{proof}
@@ -118,10 +121,15 @@ Take exactly the transitions
 \[
  c_0\longrightarrow c_1\longrightarrow c_2
 \]
-and no transition \(c_0\to c_2\). Designate \(c_0\) initial and \(c_2\)
-terminal. Then \((c_0,c_1,c_2)\) is valid, but deleting \(c_1\) gives
-\((c_0,c_2)\), which is not. Thus one summand of
-\(d_2(c_0,c_1,c_2)\) is absent from the stated codomain.
+and no transition \(c_0\to c_2\). Designate \(c_0\) as the only initial
+configuration and \(c_2\) as the only terminal configuration. Then
+\((c_0,c_1,c_2)\) is valid. Its faces are
+\[
+ (c_1,c_2),\qquad(c_0,c_2),\qquad(c_0,c_1).
+\]
+The first does not start initially, the second uses a nonexistent transition,
+and the third does not end terminally. Thus every summand of
+\(d_2(c_0,c_1,c_2)\) can be absent from the stated codomain.
 \end{proof}
 
 \begin{remark}
@@ -202,18 +210,36 @@ the additive-category, cocycle, and contraction claims fail by the preceding
 counterexamples, while the main theorem depends on them.
 \end{proof}
 
-\section{Verifier padding and a no-go principle}
+\section{Verifier padding and no-go principles}
 \label{sec:padding}
 
 \begin{definition}
-For a verifier \(V:X\times W\to\{0,1\}\) and a nonempty set \(D\), define
+For a verifier \(V:X\times W\to\{0,1\}\), define its accepting-certificate
+fiber above \(x\) by
+\[
+ W_x(V)=\{w\in W:V(x,w)=1\}.
+\]
+For a dummy certificate type \(D\), define
 \[
  V_D(x,(d,w))=V(x,w).
 \]
 \end{definition}
 
+\begin{theorem}[Certificate-fiber product theorem]
+For every input \(x\), there is a canonical equivalence
+\[
+ W_x(V_D)\cong D\times W_x(V).
+\]
+\end{theorem}
+
+\begin{proof}
+Map an accepting padded certificate \((d,w)\) to
+\((d,w)\), now regarding \(w\) as an element of \(W_x(V)\). The inverse
+forgets that regrouping. Both composites are definitionally the identity.
+\end{proof}
+
 \begin{theorem}[Padding invariance]
-For every \(x\),
+If \(D\) is nonempty, then for every \(x\),
 \[
  x\in L(V_D)\quad\Longleftrightarrow\quad x\in L(V).
 \]
@@ -224,9 +250,23 @@ An accepting padded certificate contains an accepting original certificate.
 Conversely, given an accepting \(w\), choose any \(d\in D\).
 \end{proof}
 
-\begin{corollary}[Raw-trace no-go principle]
+\begin{proposition}[Concrete witness-structure counterexample]
+There are two verifiers recognizing the same language such that one
+accepting-certificate fiber is a subsingleton and the other contains two
+distinct elements.
+\end{proposition}
+
+\begin{proof}
+Let \(X=W=\{*\}\) and let \(V(*,*)=1\). The sole fiber of \(V\) is a
+singleton. Pad by \(D=\{0,1\}\). The padded verifier recognizes the same
+language, while \((0,*)\) and \((1,*)\) are distinct accepting certificates.
+\end{proof}
+
+\begin{corollary}[Raw-presentation no-go principle]
 A quantity that changes under ignored nonempty certificate padding does not
-factor through the recognized language.
+factor through the recognized language. In particular, raw witness
+multiplicity and any unquotiented invariant that detects the product factor
+\(D\) are not intrinsic language-complexity invariants.
 \end{corollary}
 
 Polynomial-time presentation changes can also insert dummy steps, independent
@@ -329,12 +369,13 @@ proof.
 
 \section{Lean formalization}
 
-The companion Lean project formalizes the face-closure counterexample, the
-absent many-one reduction, nonadditivity of \(\rho\), failure of the proposed
-contraction, verifier-padding equivalence, abstract obstruction soundness, and
-abstract class-separation criteria. CI rejects `sorry', `admit', and
-user-declared `axiom'. These are formalized auxiliary results; they are not a
-formalization of \(P\ne NP\).
+The companion Lean project formalizes the three-face closure counterexample,
+the absent many-one reduction, nonadditivity of \(\rho\), failure of the
+proposed contraction, the certificate-fiber product equivalence,
+verifier-padding equivalence, a concrete same-language/different-witness
+counterexample, abstract obstruction soundness, and abstract class-separation
+criteria. CI rejects `sorry', `admit', and user-declared `axiom'. These are
+formalized auxiliary results; they are not a formalization of \(P\ne NP\).
 
 \section{Conclusion}
 
@@ -355,6 +396,7 @@ calibration should the program target NP versus \(P/poly\).
 \bibitem{RR} A. Razborov, S. Rudich, Natural proofs, \emph{JCSS} 55 (1997).
 \bibitem{AW} S. Aaronson, A. Wigderson, Algebrization: a new barrier in complexity theory, \emph{ACM TOCT} 1 (2009).
 \bibitem{Williams} R. Williams, Nonuniform ACC circuit lower bounds, \emph{JACM} 61 (2014).
+\bibitem{LiYang} J. Li, T. Yang, \(3.1n-o(n)\) circuit lower bounds for explicit functions, STOC, pp. 1180--1193, 2022.
 \bibitem{CDJ} M. Carmosino, N. Dang, T. Jackman, Convergent gate elimination and constructive circuit lower bounds, arXiv:2602.17942, 2026.
 \bibitem{RenWilliams} H. Ren, R. Williams, Near-maximum circuit lower bounds for exponential time with Merlin--Arthur queries, arXiv:2607.09963, 2026.
 \bibitem{AM} A. Atserias, M. M\"uller, From G\"odel incompleteness to the consistency of circuit lower bounds, arXiv:2604.25251, 2026.
