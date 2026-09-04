@@ -8,11 +8,7 @@ Determine whether every language decidable by a nondeterministic polynomial-time
 
 **Status: OPEN GAP.** This repository does not claim \(P=NP\) or \(P\ne NP\).
 
-## Repository audit
-
-At the start of this research pass, `main` contained only `.gitignore` and `LICENSE`; there was no manuscript, Lean project, or previous research branch. Accordingly, phrases such as “the current proof in the repository” would have been inaccurate.
-
-## Results established in this branch
+## Results established in the repository
 
 | ID | Statement | Mathematical status | Lean file |
 |---|---|---:|---|
@@ -25,28 +21,42 @@ At the start of this research pass, `main` contained only `.gitignore` and `LICE
 | A7 | If an NP problem is outside P, then \(P\ne NP\); more specifically, since \(P\subseteq P/poly\), an NP problem outside \(P/poly\) separates P from NP. | FORMALIZED (abstract class form) | `BarrierCriteria.lean` |
 | A8 | A trivial verifier can have a subsingleton accepting-certificate fiber while its `Bool`-padded presentation has two provably distinct accepting certificates, although both presentations recognize exactly the same language. | FORMALIZED | `WitnessStructureCounterexample.lean` |
 | A9 | Same-language equivalence is a setoid on verifier presentations; in the resulting coarse semantic quotient, nonempty dummy padding is literal equality, and every quotient-defined invariant ignores it. | FORMALIZED | `VerifierSemanticQuotient.lean` |
+| A10 | Two constant-time, rank-increasing trace presentations recognize the same universal language on `Unit`, while the direct presentation has no induced four-cycle and the dummy two-branch diamond has a chordless square in its underlying graph. Hence raw trace-cycle structure is not a language invariant. | FORMALIZED | `DiamondTraceNoGo.lean` |
 
-These results refute the cited manuscript's specific chain-complex construction and its main proof, but **do not refute every possible topological approach** to circuit complexity.
+Results A1–A4 refute the cited manuscript's specific proof. Results A5, A8, A9, and A10 establish presentation-invariance requirements for any repaired topological or categorical route. They do **not** refute every possible topological approach to circuit complexity.
+
+## Current literature calibration
+
+The September 2026 review includes the following major nearby advances:
+
+- convergent gate elimination and constructive refuters for restricted Boolean bases;
+- \(n^{2.5-\varepsilon}\) lower bounds for depth-two threshold circuits for a function in \(E^{NP}\);
+- near-maximum circuit lower bounds in \(E^{\mathrm{prMA}}/_1\);
+- \(\exp(\widetilde\Omega(\sqrt n))\) monotone lower bounds for bipartite perfect matching;
+- \(\Omega(n^{1.5})\) noncommutative arithmetic-circuit product-gate lower bounds; and
+- an extension of natural-proofs barriers to broad classes of linear-function lower bounds.
+
+Each advance is model-specific. None currently supplies either a worst-case polynomial-time SAT algorithm or a superpolynomial lower bound for SAT against unrestricted Boolean circuits.
 
 ## Decisive remaining gaps
 
-A proof of \(P\ne NP\) through circuit lower bounds must eventually supply an explicit language in NP—typically SAT—with superpolynomial circuit lower bounds. The unrestricted fan-in-two Boolean-circuit frontier remains only linear for explicit functions, so improving a constant in gate elimination is not close to the required asymptotic separation.
+A proof of \(P\ne NP\) through circuit lower bounds must ultimately supply an explicit language in NP—typically SAT—with superpolynomial circuit lower bounds. The unrestricted fan-in-two Boolean-circuit frontier remains only linear for explicit functions, so improving a constant in gate elimination is not close to the required asymptotic separation.
 
 The proposed VIOT route has four non-negotiable gaps:
 
-1. **Presentation invariance:** define the obstruction on a resource-sensitive localization or equivalent quotient where certificate padding, stuttering, recoding, and polynomial-time bidirectional simulation act trivially without erasing the complexity information needed for lower bounds.
+1. **Resource-sensitive presentation invariance:** construct a localization or quotient where padding, bounded stuttering, recoding, dummy branching, and polynomial-time bidirectional simulation act trivially without erasing the computational cost information needed for lower bounds.
 2. **Circuit soundness:** prove that a size-\(s(n)\) circuit computing the target forces the obstruction to vanish or remain below a quantitative index.
-3. **Target nonvanishing:** prove, uniformly and explicitly, that the target NP family has a nonzero or growing obstruction against every circuit of the prescribed size.
-4. **Barrier escape:** identify exactly which premise is nonrelativizing, non-natural in the Razborov–Rudich sense, and non-algebrizing, or prove that the route is intentionally confined to a circuit class where those barriers do not apply.
+3. **Target nonvanishing:** prove, uniformly and explicitly, that the target NP family has a nonzero or superpolynomially growing obstruction against every circuit of the prescribed size.
+4. **Barrier escape:** identify exactly which decisive premise is nonrelativizing, non-natural in the Razborov–Rudich sense, and non-algebrizing, or explicitly restrict the theorem to a model where the corresponding barrier is inapplicable.
 
 The semantic quotient in A9 is deliberately coarse: it removes presentation artifacts but also forgets computational cost. It is a calibration object, not the final resource-sensitive localization required by VIOT.
 
-Until all four gaps are closed, VIOT is a structured research program, not a separation proof.
+## Refuted route versus active repair
 
-## Refuted route versus repaired route
+**REFUTED:** “Take adjacent valid computation traces as simplices, apply ordinary face deletion, and use verification-order cycles to separate P from NP.”
 
-**REFUTED:** “Take all adjacent valid computation traces as simplices and use ordinary face deletion; verification-order cycles then separate P from NP.”
+**ALSO REFUTED AS A LANGUAGE INVARIANT:** “Use raw accepting-witness multiplicity or raw trace-cycle structure without first quotienting polynomial-time presentation changes.”
 
-**ACTIVE:** “Construct a presentation-invariant derived object over restrictions or simulations, prove a circuit-sound obstruction theorem, and obtain target nonvanishing by an explicit structural argument.”
+**ACTIVE:** “Construct a resource-sensitive presentation-invariant derived object over restrictions or simulations, prove a circuit-sound obstruction theorem, and establish superpolynomial target nonvanishing for an explicit NP family.”
 
-The distinction matters: the counterexamples kill a precise definition, not the broader possibility of topology in complexity theory.
+The distinction is essential: explicit counterexamples eliminate precise definitions, while the repaired route remains active until one of its own exact conjectures is refuted or proved.
