@@ -68,25 +68,26 @@ theorem diamond_step_increases_rank {a b : DiamondState}
 
 /-- The direct presentation accepts. -/
 theorem linear_accepts :
-    TraceReachable linearStep .start .accept := by
+    TraceReachable linearStep LinearState.start LinearState.accept := by
   exact TraceReachable.tail
-    (TraceReachable.refl .start)
+    (TraceReachable.refl LinearState.start)
     (by simp [linearStep])
 
 /-- The dummy branching presentation accepts through its left branch. -/
 theorem diamond_accepts :
-    TraceReachable diamondStep .start .accept := by
-  have firstStep : TraceReachable diamondStep .start .left := by
+    TraceReachable diamondStep DiamondState.start DiamondState.accept := by
+  have firstStep :
+      TraceReachable diamondStep DiamondState.start DiamondState.left := by
     exact TraceReachable.tail
-      (TraceReachable.refl .start)
+      (TraceReachable.refl DiamondState.start)
       (by simp [diamondStep])
   exact TraceReachable.tail firstStep (by simp [diamondStep])
 
 def linearLanguage : Unit → Prop :=
-  TraceLanguage linearStep .start .accept
+  TraceLanguage linearStep LinearState.start LinearState.accept
 
 def diamondLanguage : Unit → Prop :=
-  TraceLanguage diamondStep .start .accept
+  TraceLanguage diamondStep DiamondState.start DiamondState.accept
 
 /-- Both constant-time presentations recognize exactly the same language. -/
 theorem linear_and_diamond_recognize_same_language :
@@ -123,12 +124,13 @@ theorem linear_has_no_induced_four_cycle :
     ¬ HasInducedFourCycle linearStep := by
   rintro ⟨a, b, c, d, hypotheses⟩
   cases a <;> cases b <;> cases c <;> cases d <;>
-    simp_all [HasInducedFourCycle, UndirectedAdjacent, linearStep]
+    simp_all [UndirectedAdjacent, linearStep]
 
 /-- The underlying graph of the dummy branching presentation is a chordless square. -/
 theorem diamond_has_induced_four_cycle :
     HasInducedFourCycle diamondStep := by
-  refine ⟨.start, .left, .accept, .right, ?_⟩
+  refine ⟨DiamondState.start, DiamondState.left,
+    DiamondState.accept, DiamondState.right, ?_⟩
   simp [UndirectedAdjacent, diamondStep]
 
 /--
