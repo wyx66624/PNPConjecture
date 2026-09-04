@@ -1,0 +1,6 @@
+name = "PNPConjecture"
+version = "0.1.0"
+defaultTargets = ["PNPConjecture"]
+
+[[lean_lib]]
+name = "PNPConjecture"
