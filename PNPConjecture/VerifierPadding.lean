@@ -6,11 +6,39 @@ def Recognizes {Input Certificate : Type}
     (x : Input) : Prop :=
   ∃ certificate, verifier x certificate = true
 
+/-- The fiber of accepting certificates above one input. -/
+def AcceptingCertificate {Input Certificate : Type}
+    (verifier : Input → Certificate → Bool)
+    (x : Input) : Type :=
+  { certificate : Certificate // verifier x certificate = true }
+
 /-- Add an ignored dummy certificate component. -/
 def padVerifier {Input Certificate Dummy : Type}
     (verifier : Input → Certificate → Bool) :
     Input → (Dummy × Certificate) → Bool :=
   fun x paddedCertificate => verifier x paddedCertificate.2
+
+/--
+The accepting-certificate fiber of a padded verifier is exactly the product
+of the dummy type and the original accepting-certificate fiber. No
+nonemptiness assumption is needed for this structural equivalence.
+-/
+def paddedAcceptingCertificateEquiv
+    {Input Certificate Dummy : Type}
+    (verifier : Input → Certificate → Bool)
+    (x : Input) :
+    AcceptingCertificate (padVerifier (Dummy := Dummy) verifier) x ≃
+      Dummy × AcceptingCertificate verifier x where
+  toFun padded :=
+    (padded.1.1, ⟨padded.1.2, padded.2⟩)
+  invFun original :=
+    ⟨(original.1, original.2.1), original.2.2⟩
+  left_inv padded := by
+    rcases padded with ⟨⟨dummy, certificate⟩, accepted⟩
+    rfl
+  right_inv original := by
+    rcases original with ⟨dummy, ⟨certificate, accepted⟩⟩
+    rfl
 
 /--
 A nonempty ignored certificate component does not change the recognized
