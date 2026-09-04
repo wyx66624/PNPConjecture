@@ -16,11 +16,11 @@ At the start of this research pass, `main` contained only `.gitignore` and `LICE
 
 | ID | Statement | Mathematical status | Lean file |
 |---|---|---:|---|
-| A1 | Deleting an interior vertex of a valid directed computation path need not produce a valid path. | FORMALIZED | `PathBoundaryCounterexample.lean` |
+| A1 | Under the audited manuscript's own initial/terminal endpoint conditions, a valid path \((c_0,c_1,c_2)\) can have all three ordinary faces absent: one loses the initial endpoint, one skips a nonexistent transition, and one loses the terminal endpoint. | FORMALIZED | `PathBoundaryCounterexample.lean` |
 | A2 | The category whose morphisms are ordinary many-one reductions cannot have the claimed empty-language zero object: a reduction from the universal nonempty language to the empty language does not exist. | FORMALIZED | `ReductionCategoryCounterexample.lean` |
 | A3 | The proposed average of adjacent verification-order signs is not additive under concatenation. | FORMALIZED | `RhoCounterexample.lean` |
 | A4 | The displayed “append the next configuration” homotopy fails on the unique one-edge path: \(s_0(c_1)-s_0(c_0)=-e\), not \(e\). | FORMALIZED | `ContractingHomotopyCounterexample.lean` |
-| A5 | Ignoring an additional nonempty dummy certificate type preserves the recognized language. | FORMALIZED | `VerifierPadding.lean` |
+| A5 | For ignored dummy certificate type \(D\), the accepting-certificate fiber of the padded verifier is equivalent to \(D\times W_x\); when \(D\) is nonempty, the recognized language is unchanged. Hence language-factored invariants must ignore this arbitrary product enlargement. | FORMALIZED | `VerifierPadding.lean` |
 | A6 | Any obstruction satisfying “exact computation implies zero obstruction” and “all candidate circuits have nonzero obstruction” rules out every candidate circuit. | FORMALIZED | `ObstructionSoundness.lean` |
 | A7 | If an NP problem is outside P, then \(P\ne NP\); more specifically, since \(P\subseteq P/poly\), an NP problem outside \(P/poly\) separates P from NP. | FORMALIZED (abstract class form) | `BarrierCriteria.lean` |
 
