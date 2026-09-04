@@ -14,20 +14,21 @@ A final resolution is intended to be written as a journal-quality English paper 
 
 **The P versus NP problem is not claimed to be solved in this repository.**
 
-The current verified baseline contains Lean-checked auxiliary theorems, counterexamples, and research infrastructure. In particular, it includes:
+The current verified baseline contains Lean-checked auxiliary theorems, counterexamples, resource-sensitive formal infrastructure, and an exact ledger of the remaining proof obligations. Highlights include:
 
 - a four-part formal audit of the proposed homological separation in arXiv:2510.17829;
-- a proof that the proposed directed-path boundary is not closed on its stated generators;
-- a proof that ordinary many-one reductions do not form the claimed additive category;
-- a counterexample to additivity of the proposed verification-order functional;
-- a counterexample to the displayed contracting homotopy;
 - verifier-padding and accepting-certificate-fiber invariance theorems;
-- a same-language/different-witness-structure no-go theorem;
-- a semantic quotient of verifier presentations by recognized-language equivalence;
-- a constant-time trace-gadget theorem showing that an induced cycle can be added to an easy computation presentation without changing the recognized language; and
-- abstract obstruction-soundness and class-separation lemmas.
+- same-language/different-witness-structure and same-language/different-trace-cycle no-go theorems;
+- a general theorem showing that every reachable fixed trace gadget represents the same universal language under the current abstract trace semantics;
+- a proof that raw trace cycles can change even between presentations with constant-factor-equivalent running-time profiles;
+- a semantic quotient of verifier presentations and a formal proof that this quotient forgets asymptotic cost;
+- a first resource-sensitive quotient using same-language and constant-factor cost equivalence;
+- an explicit quotient by bidirectional certificate simulations with constant-factor resource overhead;
+- a quantitative theorem showing that a potential with bounded one-step growth yields construction-size lower bounds;
+- a family-level theorem converting superpolynomial target-potential growth into a non-polynomial derivation-size lower bound; and
+- a formal diagnostic proving that the naive disagreement obstruction merely restates the desired lower bound.
 
-These results rule out specific invalid arguments and impose necessary invariance conditions on future topological or categorical approaches. They do **not** constitute a proof of \(P = NP\) or \(P \ne NP\).
+These results eliminate several invalid approaches and make the remaining circuit-lower-bound burden more precise. They do **not** constitute a proof of \(P = NP\) or \(P \ne NP\).
 
 ## Research methodology
 
@@ -38,42 +39,52 @@ The project uses multiple parallel research routes. Each route is examined by fo
 - a **barrier auditor**, who checks relativization, natural-proofs, algebrization, uniformity, and model-transfer issues; and
 - a **formalizer**, who translates proved statements into Lean only after the mathematical proof is complete.
 
-Routes include unrestricted Boolean-circuit lower bounds, algorithms-to-lower-bounds, constructive refuters and range avoidance, proof complexity, bounded arithmetic, algebraic geometry and representation theory, meta-complexity, an adversarial search for polynomial-time SAT algorithms, and the new verifier-invariant topological route described below.
+Routes include unrestricted Boolean-circuit lower bounds, algorithms-to-lower-bounds, constructive refuters and range avoidance, proof complexity, bounded arithmetic, algebraic geometry and representation theory, meta-complexity, an adversarial search for polynomial-time SAT algorithms, and the verifier-invariant structural route described below.
 
-## Verifier-Invariant Obstruction Theory
+## VIOT and Resource-Localized Obstruction Profiles
 
-The repository develops **Verifier-Invariant Obstruction Theory (VIOT)** as a higher-structural research program.
+The repository develops **Verifier-Invariant Obstruction Theory (VIOT)** and its quantitative refinement, a **Resource-Localized Obstruction Profile (RLOP)**.
 
-The central observation is that raw computation traces are presentations rather than canonical language objects. Polynomial-time padding, dummy certificates, state recoding, bounded stuttering, and independent-check reordering can change witness or trace structure without changing the recognized language. A valid obstruction must therefore be defined only after these presentation artifacts have been identified through a resource-sensitive quotient or localization.
+The central observation is that raw computation traces are presentations rather than canonical complexity objects. Padding, dummy certificates, state recoding, bounded stuttering, and constant-overhead branch insertion can change witness and trace topology without changing either the recognized language or its asymptotic resource class. A valid obstruction must therefore be defined only after these presentation artifacts have been identified through an explicit resource-sensitive quotient or localization.
 
-A successful VIOT separation would require two genuine bridge theorems:
+An RLOP is intended to contain:
+
+1. a quotient by resource-controlled computational simulations;
+2. a gate-construction category or higher rewriting groupoid;
+3. a presentation-invariant, non-tautological potential or index \(\Phi_f\);
+4. a one-gate growth theorem over the chosen circuit basis;
+5. an explicit target-growth theorem; and
+6. a barrier and model-transfer audit.
+
+The repository now formalizes calibration versions of the resource quotient and the abstract quantitative bridge. The decisive unrestricted-circuit statements remain open. A successful separation still requires
 
 \[
-\text{small circuit computing } f
+\text{small circuit computing }f
 \Longrightarrow
-\text{vanishing or bounded obstruction},
+\text{bounded resource-localized obstruction},
 \]
 
 and
 
 \[
-\text{explicit NP target } f
+\text{explicit NP target }f
 \Longrightarrow
-\text{nonvanishing or superpolynomially growing obstruction}.
+\text{superpolynomially growing obstruction}.
 \]
 
-Neither bridge is currently claimed as proved.
+For a proof through circuit lower bounds, the second implication must be strong enough to establish \(\mathrm{SAT}\notin P/poly\).
 
 ## Repository map
 
 - `RESEARCH_STATUS.md` — exact claim ledger, statuses, and decisive remaining gaps.
+- `docs/CORE_GAP_DEEP_RESEARCH.md` — direct analysis of resource localization, circuit soundness, SAT nonvanishing, and barrier escape.
 - `docs/LITERATURE_REVIEW.md` — barrier-aware literature review through September 2026.
 - `docs/HOMOLOGICAL_CLAIM_AUDIT.md` — mathematical audit and explicit counterexamples.
 - `docs/DIAMOND_TRACE_NO_GO.md` — proof that constant-time dummy branching can change raw trace-cycle structure.
 - `docs/VERIFIER_INVARIANT_OBSTRUCTION_THEORY.md` — definitions and proof obligations for VIOT.
 - `docs/MULTI_ROUTE_PROGRAM.md` — parallel research routes and falsification criteria.
 - `paper/main.tex` — English research paper authored by **ChatGPT**.
-- `PNPConjecture/*.lean` — Lean formalizations of proved baseline statements.
+- `PNPConjecture/*.lean` — Lean formalizations of proved statements.
 - `.github/workflows/lean.yml` — automated Lean checking and rejection of proof placeholders.
 
 ## Claim labels
