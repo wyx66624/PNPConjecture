@@ -1,0 +1,365 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Barrier-Aware Research on \(P\) versus \(NP\):\\
+A Formal Audit of a Homological Claim and a\\
+Verifier-Invariant Obstruction Program}
+\author{ChatGPT}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We establish an auditable baseline for a research program on \(P\) versus
+\(NP\). We do not claim a solution of the problem. Our first contribution is
+a formal audit of the proposed homological separation in arXiv:2510.17829.
+Four explicit counterexamples invalidate indispensable steps: the proposed
+boundary is not closed on directed computation paths; the stated category of
+problems and many-one reductions is not additive; a verification-order
+average is not additive under composition; and the displayed contracting
+homotopy fails on a one-edge deterministic computation. These results are
+formalized in Lean.
+
+Our second contribution is a presentation-invariance principle. Adding an
+ignored nonempty certificate factor preserves the recognized language while
+it may alter raw trace multiplicity. This motivates Verifier-Invariant
+Obstruction Theory (VIOT), in which topological data are formed only after
+localizing verifier presentations by resource-preserving simulations,
+padding, stuttering, and recoding. We formulate a sound obstruction schema
+and a barrier-aware program connecting restriction sites, constructive
+refuters, convergent gate elimination, proof complexity, and equivariant
+topology. The central circuit lower bound remains open.
+\end{abstract}
+
+\section{Introduction}
+
+The \(P\)-versus-\(NP\) problem asks whether polynomial-time verification
+always entails polynomial-time deterministic decision. By Cook--Levin, a
+polynomial-time algorithm for SAT proves \(P=NP\), whereas proving SAT outside
+\(P\) proves \(P\ne NP\). Since \(P\subseteq P/poly\), the stronger statement
+\[
+  \mathrm{SAT}\notin P/poly
+\]
+also implies \(P\ne NP\).
+
+A credible route must survive local proof checking and global
+complexity-theoretic barriers. Relativization \cite{BGS}, natural proofs
+\cite{RR}, and algebrization \cite{AW} rule out broad classes of otherwise
+persuasive arguments unless an additional ingredient is identified. Explicit
+lower bounds for unrestricted fan-in-two Boolean circuits remain linear.
+Accordingly, the present paper first falsifies a precise invalid construction
+and then states a repaired topological program with every missing bridge made
+explicit.
+
+\paragraph{Epistemic status.}
+The counterexamples and padding theorem below are proved and formalized. The
+VIOT constructions are definitions and conjectures, not a proof of
+\(P\ne NP\).
+
+\section{Circuit-lower-bound setting}
+
+A verifier presentation is a tuple \(\mathcal V=(W,V,t)\), where
+\(V(x,w)\in\{0,1\}\) is computable within the stated bound and
+\[
+  L(\mathcal V)=\{x:\exists w,\;V(x,w)=1\}.
+\]
+For NP, the running time and witness length are polynomially bounded.
+
+Counting shows that almost every Boolean function on \(n\) bits needs
+circuits of size \(\Theta(2^n/n)\), but it does not uniformly place a hard
+family in NP. Recent range-avoidance work gives near-maximum lower bounds in
+exponential-time classes with promise Merlin--Arthur access
+\cite{RenWilliams}; descending to an explicit NP family is a central missing
+step.
+
+For unrestricted binary circuits, gate elimination remains the main explicit
+method. Li and Yang proved a \(3.1n-o(n)\) lower bound over the complete binary
+basis. Carmosino, Dang, and Jackman show that simplification is confluent over
+DeMorgan and \(\{\land,\lor,\oplus\}\) bases but not over \(\mathcal U_2\)
+and \(\mathcal B_2\), and connect simplification with constructive refuters
+\cite{CDJ}. Improving a linear constant is valuable but asymptotically
+insufficient for NP versus \(P/poly\).
+
+\section{Audit of a claimed homological separation}
+\label{sec:audit}
+
+The construction in \cite{Tang} takes directed computation paths
+\((c_0,\ldots,c_n)\) as generators and proposes
+\[
+ d_n(c_0,\ldots,c_n)=
+ \sum_{i=0}^n(-1)^i(c_0,\ldots,\widehat c_i,\ldots,c_n).
+\]
+It also asserts an additive category of problems and reductions, a
+verification-order cocycle, and a contraction of deterministic computations.
+
+\subsection{Face closure}
+
+\begin{theorem}[The proposed boundary is not well-defined]
+There is a valid directed computation path whose middle face is not a valid
+directed path. Hence the displayed \(d_n\) need not map the stated group
+\(C_n\) to \(C_{n-1}\).
+\end{theorem}
+
+\begin{proof}
+Take exactly the transitions
+\[
+ c_0\longrightarrow c_1\longrightarrow c_2
+\]
+and no transition \(c_0\to c_2\). Designate \(c_0\) initial and \(c_2\)
+terminal. Then \((c_0,c_1,c_2)\) is valid, but deleting \(c_1\) gives
+\((c_0,c_2)\), which is not. Thus one summand of
+\(d_2(c_0,c_1,c_2)\) is absent from the stated codomain.
+\end{proof}
+
+\begin{remark}
+The identity \(d^2=0\) cannot repair a typing failure. Directed path homology
+uses a face-stable submodule or modified boundary; that would be a different
+construction and would still require a complexity bridge.
+\end{remark}
+
+\subsection{Additivity}
+
+\begin{theorem}[The claimed zero object does not exist]
+With polynomial-time many-one reductions as morphisms, there is no morphism
+from a universal nonempty language to the empty language. Consequently the
+empty language is not a zero object, and the category is not additive as
+claimed.
+\end{theorem}
+
+\begin{proof}
+A reduction \(f:\Sigma^*\to\varnothing\) would require
+\[
+ x\in\Sigma^*\quad\Longleftrightarrow\quad f(x)\in\varnothing
+\]
+for every \(x\). The left side is true and the right side false. Hence the
+hom-set is empty. Every hom-set of a preadditive category is an abelian group
+and therefore contains a zero morphism.
+\end{proof}
+
+The instruction to run two reductions in parallel and combine their outputs
+does not define a binary operation, identity, inverse, or compatibility with
+composition.
+
+\subsection{Verification-order functional}
+
+For \(\sigma=(\sigma_1,\ldots,\sigma_m)\), \cite{Tang} defines
+\[
+ \rho(\sigma)=\frac{1}{m-1}
+ \sum_{k=1}^{m-1}\operatorname{sgn}(\sigma_{k+1}-\sigma_k)
+\]
+and uses additivity under composition.
+
+\begin{proposition}
+The displayed \(\rho\) is not additive under concatenation.
+\end{proposition}
+
+\begin{proof}
+For \(a=(1,2)\) and \(b=(3,4)\), one has
+\(\rho(a)=\rho(b)=1\). Every adjacent difference in
+\(a\|b=(1,2,3,4)\) is positive, so \(\rho(a\|b)=1\), whereas
+\(\rho(a)+\rho(b)=2\).
+\end{proof}
+
+The cross-boundary term and changed normalization invalidate the claimed
+boundary-annihilation calculation.
+
+\subsection{Contracting homotopy}
+
+\begin{proposition}
+The proposed append-the-next-configuration homotopy fails on the unique edge
+of a one-step deterministic computation.
+\end{proposition}
+
+\begin{proof}
+Let \(e=[c_0,c_1]\), where \(c_1\) is terminal and
+\(d(e)=c_1-c_0\). The rule gives
+\(s_0(c_0)=e\), \(s_0(c_1)=0\), and \(s_1(e)=0\). Therefore
+\[
+ (ds+sd)(e)=s_0(c_1)-s_0(c_0)=-e\ne e.
+\]
+\end{proof}
+
+\begin{corollary}
+The argument in \cite{Tang} does not establish \(P\ne NP\).
+\end{corollary}
+
+\begin{proof}
+Its proposed boundary is not a map on the stated generators. Independently,
+the additive-category, cocycle, and contraction claims fail by the preceding
+counterexamples, while the main theorem depends on them.
+\end{proof}
+
+\section{Verifier padding and a no-go principle}
+\label{sec:padding}
+
+\begin{definition}
+For a verifier \(V:X\times W\to\{0,1\}\) and a nonempty set \(D\), define
+\[
+ V_D(x,(d,w))=V(x,w).
+\]
+\end{definition}
+
+\begin{theorem}[Padding invariance]
+For every \(x\),
+\[
+ x\in L(V_D)\quad\Longleftrightarrow\quad x\in L(V).
+\]
+\end{theorem}
+
+\begin{proof}
+An accepting padded certificate contains an accepting original certificate.
+Conversely, given an accepting \(w\), choose any \(d\in D\).
+\end{proof}
+
+\begin{corollary}[Raw-trace no-go principle]
+A quantity that changes under ignored nonempty certificate padding does not
+factor through the recognized language.
+\end{corollary}
+
+Polynomial-time presentation changes can also insert dummy steps, independent
+check orders, and finite routing gadgets. Thus trace homology is not an
+intrinsic hardness measure until invariance under such moves is proved.
+
+\section{Verifier-Invariant Obstruction Theory}
+\label{sec:viot}
+
+\subsection{Localization}
+
+Let \(\mathsf{Ver}\) contain verifier presentations and resource-bounded
+simulations. Let \(S\) be generated by certificate recoding, ignored nonempty
+padding, polynomial stuttering, and polynomial-time bidirectional simulation.
+VIOT seeks invariants on
+\[
+ \mathsf{Ver}[S^{-1}]
+\]
+or a homotopy-coherent analogue.
+
+\begin{conjecture}[Simulation localization]
+There is an effective localization retaining polynomial resource control and
+through which the recognized-language functor factors.
+\end{conjecture}
+
+\subsection{Restriction site and defects}
+
+For \(f:\{0,1\}^n\to\{0,1\}\), let \(\mathcal R_n\) be the poset of partial
+assignments. For a candidate circuit \(C\), local data over
+\(\rho\in\mathcal R_n\) may consist of counterexamples extending \(\rho\),
+constructive refuters, simplification certificates, or proof-complexity
+witnesses. Restriction maps should form a presheaf \(\mathcal D_{f,C}\).
+One then seeks
+\[
+ \Omega_k(f,C)\in H^k(\mathcal R_n;\mathcal D_{f,C})
+\]
+or an equivariant index. Recent sign-complex work demonstrates the required
+pattern for sign-rank: define a canonical \(\mathbb Z_2\)-space, prove that
+its index lower-bounds a standard complexity measure, and compute it for an
+explicit family \cite{FHV}. VIOT still needs the analogous circuit-size
+bridge.
+
+\begin{theorem}[Abstract obstruction soundness]
+Let \(\Omega(f,C)\) take values in a pointed set. Suppose
+\[
+ C\text{ computes }f\quad\Longrightarrow\quad\Omega(f,C)=0.
+\]
+If \(\Omega(f,C)\ne0\) for every \(C\) in a class \(\mathcal C\), then no
+member of \(\mathcal C\) computes \(f\).
+\end{theorem}
+
+\begin{proof}
+A circuit in \(\mathcal C\) computing \(f\) would force the obstruction to
+be both zero and nonzero.
+\end{proof}
+
+This elementary theorem fixes the direction of the bridge: finding cycles is
+irrelevant unless exact computation forces vanishing and the target forces
+uniform nonvanishing over every candidate.
+
+\subsection{Higher rewriting}
+
+Where circuit simplification is confluent, a normal form may define local
+sections. Where confluence fails, selecting a normal form destroys
+canonicity. We therefore propose a rewriting 2-groupoid: circuits are objects,
+simplifications are 1-cells, and critical-pair resolutions are 2-cells.
+
+\begin{conjecture}[Critical-pair obstruction]
+For unrestricted binary circuits, a presentation-invariant equivariant index
+of the simplification 2-groupoid lower-bounds a nontrivial circuit resource.
+\end{conjecture}
+
+No circuit-size bridge is presently proved. The conjecture is a testable
+research target, not a renamed conclusion.
+
+\section{Barrier audit and parallel routes}
+
+A complete VIOT proof must identify why its decisive step does not relativize,
+why the useful property is not simultaneously large and efficiently
+constructive in the natural-proofs sense, and why low-degree algebraic
+extension does not preserve the argument. It must also distinguish Boolean
+from arithmetic circuit models and prove superpolynomial, not merely linear,
+growth.
+
+The broader program runs the following routes in parallel:
+\begin{enumerate}[leftmargin=*]
+\item unrestricted gate elimination and higher rewriting;
+\item algorithms-to-lower-bounds transfers \cite{Williams};
+\item constructive refuters and range avoidance;
+\item proof complexity and bounded arithmetic, including recent consistency
+results for EXP lower bounds \cite{AM};
+\item algebraic geometry and representation theory;
+\item equivariant topology and VIOT;
+\item an adversarial search for a worst-case polynomial-time SAT algorithm;
+\item meta-complexity and minimum circuit size.
+\end{enumerate}
+A route is retired only when a counterexample or incompatibility theorem
+addresses its exact conjecture. The absence of a counterexample is not a
+proof.
+
+\section{Lean formalization}
+
+The companion Lean project formalizes the face-closure counterexample, the
+absent many-one reduction, nonadditivity of \(\rho\), failure of the proposed
+contraction, verifier-padding equivalence, abstract obstruction soundness, and
+abstract class-separation criteria. CI rejects `sorry', `admit', and
+user-declared `axiom'. These are formalized auxiliary results; they are not a
+formalization of \(P\ne NP\).
+
+\section{Conclusion}
+
+The audited homological construction fails for explicit minimal reasons and
+does not resolve \(P\) versus \(NP\). The failure exposes a general design
+constraint: a complexity-topological invariant must survive
+resource-preserving changes of computational presentation.
+
+VIOT turns that constraint into a localization-first program and records the
+exact circuit-soundness and target-nonvanishing bridges still needed. The next
+credible milestone is a calibrated theorem recovering a known restricted
+lower bound from a presentation-invariant obstruction. Only after that
+calibration should the program target NP versus \(P/poly\).
+
+\begin{thebibliography}{99}
+\bibitem{Cook} S. Cook, The complexity of theorem-proving procedures, STOC, 1971.
+\bibitem{BGS} T. Baker, J. Gill, R. Solovay, Relativizations of the \(P=?NP\) question, \emph{SIAM J. Comput.} 4 (1975).
+\bibitem{RR} A. Razborov, S. Rudich, Natural proofs, \emph{JCSS} 55 (1997).
+\bibitem{AW} S. Aaronson, A. Wigderson, Algebrization: a new barrier in complexity theory, \emph{ACM TOCT} 1 (2009).
+\bibitem{Williams} R. Williams, Nonuniform ACC circuit lower bounds, \emph{JACM} 61 (2014).
+\bibitem{CDJ} M. Carmosino, N. Dang, T. Jackman, Convergent gate elimination and constructive circuit lower bounds, arXiv:2602.17942, 2026.
+\bibitem{RenWilliams} H. Ren, R. Williams, Near-maximum circuit lower bounds for exponential time with Merlin--Arthur queries, arXiv:2607.09963, 2026.
+\bibitem{AM} A. Atserias, M. M\"uller, From G\"odel incompleteness to the consistency of circuit lower bounds, arXiv:2604.25251, 2026.
+\bibitem{FHV} F. Frick, K. Hosseini, A. Vasileuski, A \(\mathbb Z_2\)-topological framework for sign-rank lower bounds, arXiv:2604.01510, 2026.
+\bibitem{Tang} J.-G. Tang, A homological separation of \(P\) from \(NP\) via computational topology and category theory, arXiv:2510.17829v2.
+\end{thebibliography}
+
+\end{document}
