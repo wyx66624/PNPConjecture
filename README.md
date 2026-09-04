@@ -1,55 +1,106 @@
-# P versus NP: auditable research and Lean formalization
+# P versus NP — AI-Assisted, Proof-First Open Research
 
-This repository is an open, proof-first research program on the **P versus NP problem**. Its long-term target is either:
+This repository coordinates an open research program aimed at resolving the **P versus NP problem** with auditable mathematics and machine-checked formalization in Lean.
 
-1. an unconditional, independently audited proof of \(P\ne NP\) or \(P=NP\), followed by a gap-free Lean formalization; or
-2. a rigorous refutation of a proposed route by an explicit counterexample, with the failed assumptions recorded for future work.
+Its ultimate objective is one of the following:
+
+1. an unconditional proof of \(P \ne NP\);
+2. an unconditional proof of \(P = NP\), including a fully specified polynomial-time algorithm for an NP-complete problem; or
+3. a rigorous refutation of a proposed proof route by an explicit counterexample or incompatibility theorem.
+
+A final resolution is intended to be written as a journal-quality English paper and formalized without proof placeholders. Until that standard is met, the repository distinguishes proved results from conjectures and open gaps.
 
 ## Current status
 
-**No proof of \(P\ne NP\) or \(P=NP\) is claimed.** The initial repository audit found that the original `main` branch contained only a license and a Lean cache ignore rule. This research branch therefore establishes a reproducible baseline rather than presenting an already completed solution.
+**The P versus NP problem is not claimed to be solved in this repository.**
 
-The first verified contribution is a four-part audit of the 2025/2026 preprint *A Homological Separation of P from NP via Computational Topology and Category Theory* (arXiv:2510.17829). The audit gives explicit counterexamples to:
+The current verified baseline contains Lean-checked auxiliary theorems, counterexamples, and research infrastructure. In particular, it includes:
 
-- closure of the proposed path generators under face deletion;
-- the claim that the reduction category is additive;
-- additivity of the proposed verification-order average under path composition; and
-- the displayed contracting homotopy on the one-edge computation.
+- a four-part formal audit of the proposed homological separation in arXiv:2510.17829;
+- a proof that the proposed directed-path boundary is not closed on its stated generators;
+- a proof that ordinary many-one reductions do not form the claimed additive category;
+- a counterexample to additivity of the proposed verification-order functional;
+- a counterexample to the displayed contracting homotopy;
+- verifier-padding and accepting-certificate-fiber invariance theorems;
+- a same-language/different-witness-structure no-go theorem;
+- a semantic quotient of verifier presentations by recognized-language equivalence;
+- a constant-time trace-gadget theorem showing that an induced cycle can be added to an easy computation presentation without changing the recognized language; and
+- abstract obstruction-soundness and class-separation lemmas.
 
-A fifth result proves a **verifier-padding invariance theorem**: adding an ignored, nonempty dummy certificate type does not change the recognized language. This motivates the new route called **Verifier-Invariant Obstruction Theory (VIOT)**: a topological or categorical invariant intended to say something about a language must first survive polynomial-time changes of verifier presentation.
+These results rule out specific invalid arguments and impose necessary invariance conditions on future topological or categorical approaches. They do **not** constitute a proof of \(P = NP\) or \(P \ne NP\).
+
+## Research methodology
+
+The project uses multiple parallel research routes. Each route is examined by four adversarial roles:
+
+- a **builder**, who develops the strongest precise theorem available;
+- a **counterexample hunter**, who searches for minimal falsifying instances;
+- a **barrier auditor**, who checks relativization, natural-proofs, algebrization, uniformity, and model-transfer issues; and
+- a **formalizer**, who translates proved statements into Lean only after the mathematical proof is complete.
+
+Routes include unrestricted Boolean-circuit lower bounds, algorithms-to-lower-bounds, constructive refuters and range avoidance, proof complexity, bounded arithmetic, algebraic geometry and representation theory, meta-complexity, an adversarial search for polynomial-time SAT algorithms, and the new verifier-invariant topological route described below.
+
+## Verifier-Invariant Obstruction Theory
+
+The repository develops **Verifier-Invariant Obstruction Theory (VIOT)** as a higher-structural research program.
+
+The central observation is that raw computation traces are presentations rather than canonical language objects. Polynomial-time padding, dummy certificates, state recoding, bounded stuttering, and independent-check reordering can change witness or trace structure without changing the recognized language. A valid obstruction must therefore be defined only after these presentation artifacts have been identified through a resource-sensitive quotient or localization.
+
+A successful VIOT separation would require two genuine bridge theorems:
+
+\[
+\text{small circuit computing } f
+\Longrightarrow
+\text{vanishing or bounded obstruction},
+\]
+
+and
+
+\[
+\text{explicit NP target } f
+\Longrightarrow
+\text{nonvanishing or superpolynomially growing obstruction}.
+\]
+
+Neither bridge is currently claimed as proved.
 
 ## Repository map
 
-- `RESEARCH_STATUS.md` — claim ledger and exact open gaps.
+- `RESEARCH_STATUS.md` — exact claim ledger, statuses, and decisive remaining gaps.
 - `docs/LITERATURE_REVIEW.md` — barrier-aware literature review through September 2026.
-- `docs/HOMOLOGICAL_CLAIM_AUDIT.md` — mathematical counterexamples, with proofs.
-- `docs/VERIFIER_INVARIANT_OBSTRUCTION_THEORY.md` — the new higher-structural route.
+- `docs/HOMOLOGICAL_CLAIM_AUDIT.md` — mathematical audit and explicit counterexamples.
+- `docs/VERIFIER_INVARIANT_OBSTRUCTION_THEORY.md` — definitions and proof obligations for VIOT.
 - `docs/MULTI_ROUTE_PROGRAM.md` — parallel research routes and falsification criteria.
-- `paper/main.tex` — English research paper, author **ChatGPT**.
-- `PNPConjecture/*.lean` — Lean formalization of the proved baseline results.
-- `.github/workflows/lean.yml` — automated proof checking and prohibition of `sorry`, `admit`, and user-declared `axiom`.
+- `paper/main.tex` — English research paper authored by **ChatGPT**.
+- `PNPConjecture/*.lean` — Lean formalizations of proved baseline statements.
+- `.github/workflows/lean.yml` — automated Lean checking and rejection of proof placeholders.
 
-## Epistemic labels
+## Claim labels
 
-Every mathematical statement should carry one of these labels:
+Every nontrivial claim should be marked with one of the following labels:
 
-- **FORMALIZED** — compiled by the pinned Lean toolchain without placeholders.
-- **PROVED** — a complete conventional proof is written, but not yet formalized.
+- **FORMALIZED** — compiled by the pinned Lean toolchain without `sorry`, `admit`, or user-declared axioms.
+- **PROVED** — a complete conventional proof is present but has not yet been formalized.
 - **CONDITIONAL** — proved from explicitly listed hypotheses.
-- **OPEN GAP** — required for a route but not proved.
-- **CONJECTURE** — proposed statement supported by evidence, not a theorem.
-- **REFUTED** — an explicit counterexample is supplied.
+- **OPEN GAP** — a required implication has not been proved.
+- **CONJECTURE** — a precise proposed theorem, not an established result.
+- **REFUTED** — an explicit counterexample or incompatibility proof is supplied.
 
-A failed attempt is not marked false merely because a proof has not been found. A route is retired only after a counterexample or an incompatibility theorem addresses its precise statement.
+A route is not discarded merely because it is difficult. It is narrowed or retired only when a counterexample addresses its precise statement. Conversely, survival against current counterexample searches is not evidence of truth.
 
-## Merge policy
+## Merge standard
 
-`main` is reserved for material that has passed:
+Material merged into `main` must pass the checks appropriate to its scope:
 
-1. mathematical dependency auditing;
-2. Lean CI with no proof placeholders;
-3. barrier analysis against relativization, natural proofs, and algebrization where applicable;
-4. adversarial review by a mathematically independent reviewer; and
-5. explicit maintainer review before merge.
+1. an exact mathematical statement with all quantifiers and computational models specified;
+2. a complete proof or explicit counterexample;
+3. dependency and barrier auditing;
+4. Lean CI with no proof placeholders for claims marked **FORMALIZED**;
+5. agreement between the manuscript statement and the Lean statement; and
+6. maintainer review.
 
-A complete P-versus-NP claim must not be merged merely because a manuscript is long, a model is confident, or a proof assistant verifies only auxiliary lemmas.
+Any claimed complete resolution of P versus NP additionally requires independent expert review and a complete bridge to a standard NP-complete problem such as SAT. Length, confidence, experimental evidence, or verification of only auxiliary lemmas is not sufficient.
+
+## Contributing
+
+Contributions are welcome through pull requests. State the exact theorem, model of computation, uniformity assumptions, asymptotic regime, dependencies, proof, counterexample search, barrier profile, and Lean correspondence. See `CONTRIBUTING.md` for the full protocol.
