@@ -27,8 +27,9 @@ def paddedAcceptingCertificateEquiv
     {Input Certificate Dummy : Type}
     (verifier : Input → Certificate → Bool)
     (x : Input) :
-    AcceptingCertificate (padVerifier (Dummy := Dummy) verifier) x ≃
-      Dummy × AcceptingCertificate verifier x where
+    Equiv
+      (AcceptingCertificate (padVerifier (Dummy := Dummy) verifier) x)
+      (Dummy × AcceptingCertificate verifier x) where
   toFun padded :=
     (padded.1.1, ⟨padded.1.2, padded.2⟩)
   invFun original :=
